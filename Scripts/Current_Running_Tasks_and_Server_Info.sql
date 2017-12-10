@@ -29,7 +29,7 @@ DISCLAIMER: This script does not make any modifications to the server, except
 */
 
 USE tempdb;
-SET TRANSACTION ISOLATION LEVEL SNAPSHOT;
+SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED;
 SET DEADLOCK_PRIORITY LOW;
 SET STATISTICS XML OFF;
 SET LOCK_TIMEOUT 500;
@@ -837,7 +837,8 @@ SELECT
         WHEN '10.5' THEN '2008 R2'
         WHEN '11.0' THEN '2012'
         WHEN '12.0' THEN '2014'
-        WHEN '13.0' THEN '2016' ELSE @version END)+' '+
+        WHEN '13.0' THEN '2016'
+        WHEN '14.0' THEN '2017'  ELSE @version END)+' '+
         REPLACE(REPLACE(REPLACE(
             CAST(SERVERPROPERTY('Edition') AS varchar(128)), ' Edition', ''),
             'Standard', 'Std'), 'Enterprise', 'Ent') AS [Product, edition],
@@ -930,6 +931,7 @@ ORDER BY db.name, (CASE f.filetype
 -------------------------------------------------------------------------------
 --- 3. Display all sessions:
 -------------------------------------------------------------------------------
+SET ANSI_WARNINGS ON;
 
 SELECT
     xc.session_id AS SPID,
